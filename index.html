@@ -257,6 +257,20 @@ function App() {
         <div style={{display:"inline-block",background:"rgba(255,255,255,.2)",borderRadius:30,padding:"6px 18px",fontSize:14,fontWeight:600,marginTop:10}}>⏳ {cd}</div>
       </div>
 
+      {/* 다운로드 버튼 */}
+      <div style={{textAlign:"right",marginBottom:8}}>
+        <button onClick={()=>{
+          const code=document.documentElement.outerHTML;
+          const blob=new Blob([code],{type:"text/html"});
+          const a=document.createElement("a");
+          a.href=URL.createObjectURL(blob);
+          a.download="newme_camp.html";
+          a.click();
+        }} style={{background:C.td,color:"#fff",border:"none",borderRadius:8,padding:"8px 16px",fontWeight:600,cursor:"pointer",fontSize:13}}>
+          ⬇️ HTML 다운로드
+        </button>
+      </div>
+
       {/* 연결 상태 */}
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:connected?C.mintL:C.sunL,borderRadius:10,padding:"8px 14px",marginBottom:12,fontSize:12}}>
         <span style={{color:connected?C.mintD:C.sunD}}>
