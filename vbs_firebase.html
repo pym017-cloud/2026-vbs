@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEW ME — 2026 교육부 연합캠프</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F0F4FF; min-height: 100vh; padding: 16px; }
+input, textarea, button { font-family: inherit; }
+textarea { resize: vertical; }
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); padding: 10px 22px; border-radius: 30px; font-size: 13px; font-weight: 600; color: #fff; z-index: 999; white-space: nowrap; pointer-events: none; }
+</style>
+</head>
+<body>
+<div id="root"><div style="text-align:center;padding:4rem;color:#64748B;font-family:sans-serif">⏳ 로딩 중...</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.0/firebase-app-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.0/firebase-database-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyAU-Udn3IAx0MIFSrrUla0JKALoU-dOWQs",
+  authDomain:        "vbs-f4013.firebaseapp.com",
+  databaseURL:       "https://vbs-f4013-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:         "vbs-f4013",
+  storageBucket:     "vbs-f4013.firebasestorage.app",
+  messagingSenderId: "364208312206",
+  appId:             "1:364208312206:web:f2ff39482d26932441dedf"
+};
+
+const C = {
+  sky:"#38BDF8",skyL:"#E0F7FF",skyD:"#0369A1",
+  sun:"#FBBF24",sunL:"#FEF9C3",sunD:"#B45309",
+  mint:"#34D399",mintL:"#D1FAE5",mintD:"#065F46",
+  coral:"#F87171",coralL:"#FEE2E2",coralD:"#991B1B",
+  pur:"#A78BFA",purL:"#EDE9FE",purD:"#5B21B6",
+  white:"#fff",gray:"#F8FAFC",td:"#1E293B",tm:"#475569",tl:"#94A3B8"
+};
+
+const DEFAULT_CL = [
+  {id:1,cat:"교재 및 자료",item:"세션별 강의 교재 인쇄 (6세션)",done:false},
+  {id:2,cat:"교재 및 자료",item:"이번 주 실천 카드 제작 (세션당 1종)",done:false},
+  {id:3,cat:"교재 및 자료",item:"소그룹 나눔 질문지 출력",done:false},
+  {id:4,cat:"교재 및 자료",item:"상담 카드 (학생 정체성 고민 파악용) 준비",done:false},
+  {id:5,cat:"교재 및 자료",item:"이름표 제작 (초·중·고 구분)",done:false},
+  {id:6,cat:"교재 및 자료",item:"출석부 출력",done:false},
+  {id:7,cat:"교재 및 자료",item:"찬양 악보 및 가사 준비",done:false},
+  {id:8,cat:"공간 및 환경",item:"교실/강당 배치 및 청소",done:false},
+  {id:9,cat:"공간 및 환경",item:"현수막/배너 설치",done:false},
+  {id:10,cat:"공간 및 환경",item:"빔프로젝터/스크린 점검",done:false},
+  {id:11,cat:"공간 및 환경",item:"음향 장비 점검",done:false},
+  {id:12,cat:"간식 및 식사",item:"간식 구매 목록 확인",done:false},
+  {id:13,cat:"간식 및 식사",item:"식수 및 컵 준비",done:false},
+  {id:14,cat:"교사 준비",item:"핵심 본문 3개 선행 묵상 (2주 이상)",done:false},
+  {id:15,cat:"교사 준비",item:"학생 상담 카드 사전 수거 및 파악",done:false},
+  {id:16,cat:"교사 준비",item:"소그룹 나눔 질문 숙지 및 훈련",done:false},
+  {id:17,cat:"교사 준비",item:'"판단하지 않는 경청" 문화 사전 교육',done:false},
+  {id:18,cat:"교사 준비",item:"캠프 후 follow-up 양육 계획 수립",done:false},
+  {id:19,cat:"기타",item:"구급함 확인",done:false},
+  {id:20,cat:"기타",item:"교사 연락망 공유",done:false},
+  {id:21,cat:"기타",item:"장소 섭외 확정 및 공지",done:false},
+];
+
+const SESSIONS = [
+  {act:"1막",color:C.sky,colorL:C.skyL,colorD:C.skyD,items:[
+    {no:"세션 1",title:"나는 누구인가",verse:"고린도후서 5:17",keyword:"정체성 선언",icon:"👤",
+     desc:"세상이 정의하는 나 vs 하나님이 정의하시는 나. 정체성의 출처를 바꿉니다."},
+    {no:"세션 2",title:"하나님의 눈으로 본 나",verse:"시편 139:13-14",keyword:"자기 수용",icon:"🔍",
+     desc:"하나님이 나를 지으신 방식으로 자신을 바라보는 시간입니다."},
+  ]},
+  {act:"2막",color:C.pur,colorL:C.purL,colorD:C.purD,items:[
+    {no:"세션 3",title:"세상 vs 하나님의 기준",verse:"로마서 12:2",keyword:"마음 갱신",icon:"⚖️",
+     desc:"SNS와 또래 문화가 만드는 기준을 직면하고, 하나님의 기준으로 전환합니다."},
+    {no:"세션 4",title:"변화는 어떻게 일어나는가",verse:"빌립보서 4:8",keyword:"사고의 전환",icon:"🔄",
+     desc:"변화는 결심이 아니라 하나님과의 관계 안에서 일어납니다."},
+  ]},
+  {act:"3막",color:C.mint,colorL:C.mintL,colorD:C.mintD,items:[
+    {no:"세션 5",title:"성령의 열매로 산다",verse:"갈라디아서 5:22-23",keyword:"실천 선언",icon:"🌱",
+     desc:"9가지 열매를 학교·가정·관계 안에서 지금 선택할 수 있는 삶의 방식으로 연결합니다."},
+    {no:"세션 6",title:"NEW ME 선언식",verse:"고린도후서 5:17",keyword:"파송 & 결단",icon:"✨",
+     desc:"캠프의 여정을 마무리하며 새로운 나를 선언하고 일상으로 파송합니다."},
+  ]},
+];
+
+const WORDS = [
+  {ref:"고린도후서 5:17",label:"중심 본문 · 1막",text:"그런즉 누구든지 그리스도 안에 있으면 새로운 피조물이라 이전 것은 지나갔으니 보라 새것이 되었도다",color:C.pur,colorL:C.purL,colorD:C.purD},
+  {ref:"로마서 12:2",label:"변화의 원리 · 2막",text:"너희는 이 세대를 본받지 말고 오직 마음을 새롭게 함으로 변화를 받아 하나님의 선하시고 기뻐하시고 온전하신 뜻이 무엇인지 분별하도록 하라",color:C.sky,colorL:C.skyL,colorD:C.skyD},
+  {ref:"갈라디아서 5:22-23",label:"열매 맺는 삶 · 3막",text:"오직 성령의 열매는 사랑과 희락과 화평과 오래 참음과 자비와 양선과 충성과 온유와 절제니 이같은 것을 금지할 법이 없느니라",color:C.mint,colorL:C.mintL,colorD:C.mintD},
+];
+
+const RES = [
+  {title:"세션 1-2 교재",desc:"1막 — 정체성 발견",icon:"📖",bg:C.skyL,tc:C.skyD,tag:"1막"},
+  {title:"세션 3-4 교재",desc:"2막 — 변화의 과정",icon:"📖",bg:C.purL,tc:C.purD,tag:"2막"},
+  {title:"세션 5-6 교재",desc:"3막 — 열매 맺는 삶",icon:"📖",bg:C.mintL,tc:C.mintD,tag:"3막"},
+  {title:"실천 카드",desc:"세션별 이번 주 실천",icon:"🃏",bg:C.sunL,tc:C.sunD,tag:"활동"},
+  {title:"소그룹 나눔 질문",desc:"교사용 진행 가이드",icon:"👥",bg:C.coralL,tc:C.coralD,tag:"교사"},
+  {title:"상담 카드",desc:"학생 정체성 고민 파악",icon:"💬",bg:C.purL,tc:C.purD,tag:"행정"},
+  {title:"찬양 악보",desc:"캠프 주제 찬양",icon:"🎵",bg:C.skyL,tc:C.skyD,tag:"찬양"},
+  {title:"일정표 인쇄용",desc:"전체 세션 시간표",icon:"📅",bg:C.mintL,tc:C.mintD,tag:"일정"},
+];
+
+function App() {
+  const [tab, setTab] = useState("home");
+  const [cl, setCl] = useState(DEFAULT_CL);
+  const [coms, setComs] = useState([]);
+  const [name, setName] = useState("");
+  const [msg, setMsg] = useState("");
+  const [cd, setCd] = useState("");
+  const [connected, setConnected] = useState(false);
+  const [toast, setToast] = useState(null);
+  const [wordIdx, setWordIdx] = useState(0);
+  const db = useRef(null);
+
+  const showToast = (m, type="ok") => {
+    setToast({m,type});
+    setTimeout(()=>setToast(null),2500);
+  };
+
+  useEffect(()=>{
+    try {
+      const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(FIREBASE_CONFIG);
+      db.current = firebase.database(app);
+      db.current.ref(".info/connected").on("value",s=>setConnected(!!s.val()));
+      db.current.ref("checklist").on("value",s=>{
+        const v=s.val();
+        if(v) setCl(Array.isArray(v)?v:Object.values(v));
+        else db.current.ref("checklist").set(DEFAULT_CL);
+      });
+      db.current.ref("comments").on("value",s=>{
+        const v=s.val();
+        setComs(v?Object.values(v).sort((a,b)=>a.id-b.id):[]);
+      });
+    } catch(e){ showToast("Firebase 오류: "+e.message,"err"); }
+    return()=>{
+      if(db.current){
+        db.current.ref("checklist").off();
+        db.current.ref("comments").off();
+        db.current.ref(".info/connected").off();
+      }
+    };
+  },[]);
+
+  useEffect(()=>{
+    const target=new Date("2026-07-18T09:00:00");
+    const tick=()=>{
+      const diff=target-new Date();
+      if(diff<=0){setCd("D-Day! 🎉");return;}
+      const d=Math.floor(diff/86400000);
+      const h=Math.floor((diff%86400000)/3600000);
+      const m=Math.floor((diff%3600000)/60000);
+      setCd("D-"+d+"일 "+h+"시간 "+m+"분");
+    };
+    tick();
+    const iv=setInterval(tick,60000);
+    return()=>clearInterval(iv);
+  },[]);
+
+  const check=async(id)=>{
+    if(!db.current)return;
+    const updated=cl.map(c=>c.id===id?{...c,done:!c.done}:c);
+    await db.current.ref("checklist").set(updated);
+    showToast("저장되었습니다 ✓");
+  };
+
+  const addCom=async()=>{
+    if(!name.trim()||!msg.trim()||!db.current)return;
+    const now=new Date();
+    const t=(now.getMonth()+1)+"/"+now.getDate()+" "+String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
+    const id=Date.now();
+    await db.current.ref("comments/"+id).set({id,name:name.trim(),time:t,text:msg.trim()});
+    setMsg("");
+    showToast("댓글이 등록되었습니다 💬");
+  };
+
+  const delCom=async(id)=>{
+    if(!db.current)return;
+    await db.current.ref("comments/"+id).remove();
+    showToast("삭제되었습니다");
+  };
+
+  const done=cl.filter(c=>c.done).length;
+  const pct=Math.round(done/cl.length*100);
+  const cats=[...new Set(cl.map(c=>c.cat))];
+
+  const TABS=[
+    {id:"home",label:"홈",e:"🏠"},
+    {id:"sessions",label:"세션",e:"📖"},
+    {id:"checklist",label:"준비물",e:"✅"},
+    {id:"resources",label:"자료실",e:"📂"},
+    {id:"board",label:"게시판",e:"💬"},
+  ];
+
+  const card={background:C.white,borderRadius:14,padding:"1rem 1.2rem",marginBottom:12,boxShadow:"0 1px 8px rgba(0,0,0,0.07)"};
+  const inp={width:"100%",padding:"9px 12px",borderRadius:8,border:"1px solid #E2E8F0",fontSize:14,outline:"none"};
+  const pill=(bg,tc)=>({display:"inline-block",background:bg,color:tc,borderRadius:20,padding:"3px 10px",fontSize:11,fontWeight:600});
+  const progBar={background:"#E2E8F0",borderRadius:99,height:10,overflow:"hidden"};
+  const progFill=w=>({background:"linear-gradient(90deg,"+C.mint+","+C.sky+")",height:"100%",borderRadius:99,width:w+"%",transition:"width .4s"});
+  const w=WORDS[wordIdx];
+
+  return (
+    <div style={{maxWidth:640,margin:"0 auto"}}>
+      {toast&&<div className="toast" style={{background:toast.type==="err"?C.coralD:C.mintD}}>{toast.m}</div>}
+
+      {/* 헤더 */}
+      <div style={{background:"linear-gradient(135deg,#1E3A5F,#2D6A9F,#5BA4CF)",borderRadius:20,padding:"2rem 1.5rem 1.5rem",marginBottom:12,textAlign:"center",color:"#fff"}}>
+        <div style={{fontSize:12,opacity:.8,marginBottom:4,letterSpacing:1}}>2026 교육부 연합캠프</div>
+        <div style={{fontSize:28,fontWeight:900,letterSpacing:-0.5}}>NEW ME ✨</div>
+        <div style={{fontSize:13,opacity:.9,marginTop:4,fontWeight:600}}>새로운 나, 새로운 우리</div>
+        <div style={{fontSize:12,fontStyle:"italic",opacity:.8,marginTop:8,lineHeight:1.6}}>고린도후서 5:17 — 그런즉 누구든지 그리스도 안에 있으면<br/>새로운 피조물이라</div>
+        <div style={{display:"flex",justifyContent:"center",gap:8,marginTop:10,flexWrap:"wrap"}}>
+          {["초등부","중등부","고등부"].map(d=>(
+            <span key={d} style={{background:"rgba(255,255,255,.2)",borderRadius:20,padding:"4px 12px",fontSize:12,fontWeight:600}}>{d}</span>
+          ))}
+        </div>
+        <div style={{display:"inline-block",background:"rgba(255,255,255,.2)",borderRadius:30,padding:"6px 18px",fontSize:14,fontWeight:600,marginTop:10}}>⏳ {cd}</div>
+      </div>
+
+      {/* 연결 상태 */}
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:connected?C.mintL:C.sunL,borderRadius:10,padding:"8px 14px",marginBottom:12,fontSize:12}}>
+        <span style={{color:connected?C.mintD:C.sunD}}>
+          {connected?"🟢 Firebase 실시간 연결됨 — 모든 교사와 동기화 중":"🟡 서버에 연결 중..."}
+        </span>
+      </div>
+
+      {/* 탭 */}
+      <div style={{display:"flex",gap:6,marginBottom:16,flexWrap:"wrap"}}>
+        {TABS.map(t=>(
+          <button key={t.id} onClick={()=>setTab(t.id)} style={{flex:"1 1 auto",padding:"8px 4px",borderRadius:10,border:"none",cursor:"pointer",fontSize:12,fontWeight:tab===t.id?600:400,background:tab===t.id?C.td:C.white,color:tab===t.id?"#fff":C.tm,boxShadow:tab===t.id?"none":"0 1px 4px rgba(0,0,0,.08)"}}>
+            {t.e} {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* 홈 */}
+      {tab==="home"&&(
+        <div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:12}}>
+            {[
+              {label:"총 세션",val:"6개",e:"📖",bg:C.skyL,tc:C.skyD},
+              {label:"준비 완료",val:pct+"%",e:"✅",bg:C.mintL,tc:C.mintD},
+              {label:"대상 부서",val:"3부서",e:"👥",bg:C.purL,tc:C.purD},
+              {label:"게시판",val:coms.length+"개",e:"💬",bg:C.sunL,tc:C.sunD},
+            ].map((x,i)=>(
+              <div key={i} style={{background:x.bg,borderRadius:12,padding:"1rem",textAlign:"center"}}>
+                <div style={{fontSize:24}}>{x.e}</div>
+                <div style={{fontSize:20,fontWeight:700,color:x.tc}}>{x.val}</div>
+                <div style={{fontSize:12,color:x.tc,opacity:.8}}>{x.label}</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={card}>
+            <div style={{fontSize:16,fontWeight:700,marginBottom:10}}>📊 준비물 진행 현황</div>
+            <div style={{display:"flex",justifyContent:"space-between",fontSize:13,color:C.tm,marginBottom:4}}>
+              <span>{done} / {cl.length} 완료</span>
+              <span style={{fontWeight:700,color:C.mintD}}>{pct}%</span>
+            </div>
+            <div style={progBar}><div style={progFill(pct)}/></div>
+          </div>
+
+          {/* 핵심 말씀 슬라이더 */}
+          <div style={card}>
+            <div style={{fontSize:16,fontWeight:700,marginBottom:10}}>📖 핵심 말씀</div>
+            <div style={{background:w.colorL,borderRadius:10,padding:"1rem 1.2rem",borderLeft:"4px solid "+w.color,marginBottom:10}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+                <span style={{fontSize:13,color:w.colorD,fontWeight:700}}>{w.ref}</span>
+                <span style={pill(w.colorL,w.colorD)}>{w.label}</span>
+              </div>
+              <div style={{fontSize:14,color:C.td,lineHeight:1.8}}>{w.text}</div>
+            </div>
+            <div style={{display:"flex",gap:6,justifyContent:"center"}}>
+              {WORDS.map((_,i)=>(
+                <button key={i} onClick={()=>setWordIdx(i)} style={{width:28,height:28,borderRadius:"50%",border:"none",cursor:"pointer",fontSize:11,fontWeight:wordIdx===i?700:400,background:wordIdx===i?C.td:C.white,color:wordIdx===i?"#fff":C.tm,boxShadow:"0 1px 4px rgba(0,0,0,.1)"}}>
+                  {i+1}막
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 3막 구조 요약 */}
+          <div style={card}>
+            <div style={{fontSize:16,fontWeight:700,marginBottom:12}}>🎭 캠프 3막 구조</div>
+            {[
+              {act:"1막",title:"정체성 발견",desc:"나는 누구인가 — 하나님 안의 정체성",color:C.sky,colorL:C.skyL},
+              {act:"2막",title:"변화의 과정",desc:"세상이 아닌 하나님의 기준으로 마음 갱신",color:C.pur,colorL:C.purL},
+              {act:"3막",title:"열매 맺는 삶",desc:"성령의 열매로 흘러나오는 새로운 나",color:C.mint,colorL:C.mintL},
+            ].map((m,i)=>(
+              <div key={i} style={{display:"flex",gap:12,padding:"10px 0",borderBottom:i<2?"1px solid #F1F5F9":"none",alignItems:"center"}}>
+                <div style={{width:40,height:40,borderRadius:10,background:m.colorL,display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,color:m.color,flexShrink:0}}>{m.act}</div>
+                <div>
+                  <div style={{fontWeight:700,fontSize:14}}>{m.title}</div>
+                  <div style={{fontSize:12,color:C.tm,marginTop:2}}>{m.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 세션 */}
+      {tab==="sessions"&&(
+        <div>
+          {SESSIONS.map((s,si)=>(
+            <div key={si} style={card}>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
+                <div style={{width:36,height:36,borderRadius:10,background:s.colorL,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:800,color:s.color}}>{s.act}</div>
+                <div style={{fontSize:16,fontWeight:700}}>{s.act === "1막" ? "정체성 발견" : s.act === "2막" ? "변화의 과정" : "열매 맺는 삶"}</div>
+              </div>
+              {s.items.map((it,ii)=>(
+                <div key={ii} style={{background:s.colorL,borderRadius:12,padding:"1rem",marginBottom:ii<s.items.length-1?10:0}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
+                    <span style={{fontSize:20}}>{it.icon}</span>
+                    <div>
+                      <div style={{fontSize:13,color:s.colorD,fontWeight:700}}>{it.no}</div>
+                      <div style={{fontSize:15,fontWeight:700,color:C.td}}>{it.title}</div>
+                    </div>
+                    <span style={{...pill(s.color+"33",s.colorD),marginLeft:"auto",fontSize:10}}>{it.keyword}</span>
+                  </div>
+                  <div style={{fontSize:12,color:C.tm,lineHeight:1.6,marginBottom:6}}>{it.desc}</div>
+                  <div style={{fontSize:12,color:s.colorD,fontWeight:600}}>📖 {it.verse}</div>
+                </div>
+              ))}
+            </div>
+          ))}
+          <div style={{...card,background:C.purL}}>
+            <div style={{fontSize:14,fontWeight:700,color:C.purD,marginBottom:10}}>✦ 캠프 설계 원칙</div>
+            {[
+              {n:"①",t:"지식 → 경험 → 결단","d":"말씀 강의 · 소그룹 나눔 · 개인 결단 3단계"},
+              {n:"②",t:"연령별 심화","d":"초등(이야기 중심) · 중등(질문 중심) · 고등(논증 중심)"},
+              {n:"③",t:"일상 연결","d":"세션마다 '이번 주 실천 카드' 제공"},
+            ].map((p,i)=>(
+              <div key={i} style={{display:"flex",gap:10,padding:"8px 0",borderBottom:i<2?"1px solid "+C.pur+"44":"none"}}>
+                <div style={{fontWeight:700,color:C.pur,fontSize:14,flexShrink:0}}>{p.n}</div>
+                <div>
+                  <div style={{fontSize:13,fontWeight:700,color:C.purD}}>{p.t}</div>
+                  <div style={{fontSize:12,color:C.tm,marginTop:2}}>{p.d}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 체크리스트 */}
+      {tab==="checklist"&&(
+        <div>
+          <div style={{...card,marginBottom:12}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <div style={{fontSize:14,fontWeight:600}}>전체 진행률</div>
+              <span style={{fontWeight:700,color:C.mintD,fontSize:18}}>{pct}%</span>
+            </div>
+            <div style={{...progBar,marginTop:8}}><div style={progFill(pct)}/></div>
+            <div style={{fontSize:12,color:C.tl,marginTop:6}}>체크하면 모든 교사에게 실시간 반영됩니다</div>
+          </div>
+          {cats.map(cat=>(
+            <div key={cat} style={card}>
+              <div style={{fontSize:16,fontWeight:700,marginBottom:10}}>{cat}</div>
+              {cl.filter(c=>c.cat===cat).map(c=>(
+                <div key={c.id} onClick={()=>check(c.id)} style={{display:"flex",alignItems:"center",gap:10,padding:"9px 0",borderBottom:"1px solid #F1F5F9",opacity:c.done?.5:1,cursor:"pointer"}}>
+                  <div style={{width:20,height:20,borderRadius:6,border:"2px solid "+(c.done?C.mint:"#CBD5E1"),background:c.done?C.mint:"transparent",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                    {c.done&&<span style={{color:"#fff",fontSize:13,fontWeight:700}}>✓</span>}
+                  </div>
+                  <span style={{fontSize:14,textDecoration:c.done?"line-through":"none"}}>{c.item}</span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* 자료실 */}
+      {tab==="resources"&&(
+        <div>
+          <div style={card}>
+            <div style={{fontSize:16,fontWeight:700,marginBottom:12}}>🎬 영상 자료</div>
+            <div style={{position:"relative",paddingBottom:"56.25%",height:0,borderRadius:10,overflow:"hidden"}}>
+              <iframe src="https://www.youtube.com/embed/miKvQ86PZ9I" title="캠프 영상" frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen style={{position:"absolute",top:0,left:0,width:"100%",height:"100%"}}/>
+            </div>
+          </div>
+          <div style={card}>
+            <div style={{fontSize:16,fontWeight:700,marginBottom:14}}>📂 자료 목록</div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(150px,1fr))",gap:10}}>
+              {RES.map((r,i)=>(
+                <div key={i} style={{background:r.bg,borderRadius:12,padding:"1rem"}}>
+                  <div style={{fontSize:26,marginBottom:6}}>{r.icon}</div>
+                  <div style={{fontSize:13,fontWeight:700,color:r.tc}}>{r.title}</div>
+                  <div style={{fontSize:12,color:r.tc,opacity:.8,marginTop:2}}>{r.desc}</div>
+                  <div style={{marginTop:8}}><span style={{...pill(r.tc+"22",r.tc),fontSize:10}}>{r.tag}</span></div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={card}>
+            <div style={{fontSize:16,fontWeight:700,marginBottom:10}}>📌 안내 사항</div>
+            <ul style={{paddingLeft:18,fontSize:14,lineHeight:2,color:C.tm}}>
+              <li>모든 자료는 캠프 2주 전까지 배포 예정입니다</li>
+              <li>자료 추가 요청은 교사 게시판에 남겨주세요</li>
+              <li>인쇄 자료는 캠프 1주 전 제공됩니다</li>
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {/* 게시판 */}
+      {tab==="board"&&(
+        <div style={card}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+            <div style={{fontSize:16,fontWeight:700}}>💬 교사 게시판</div>
+            <span style={pill(C.skyL,C.skyD)}>{coms.length}개</span>
+          </div>
+          <div style={{fontSize:12,color:C.tl,marginBottom:14}}>모든 교사가 실시간으로 공유하는 게시판입니다</div>
+          {coms.length===0&&<div style={{textAlign:"center",padding:"2rem 0",color:C.tl,fontSize:14}}>첫 번째 댓글을 남겨보세요 😊</div>}
+          {coms.map(c=>(
+            <div key={c.id} style={{background:C.gray,borderRadius:10,padding:"10px 12px",marginBottom:8}}>
+              <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
+                <span style={{fontWeight:700,fontSize:13}}>👤 {c.name}</span>
+                <div style={{display:"flex",alignItems:"center",gap:8}}>
+                  <span style={{fontSize:11,color:C.tl}}>{c.time}</span>
+                  <button onClick={()=>delCom(c.id)} style={{background:"none",border:"none",cursor:"pointer",fontSize:12,color:C.tl,padding:0}}>✕</button>
+                </div>
+              </div>
+              <div style={{fontSize:14,lineHeight:1.6}}>{c.text}</div>
+            </div>
+          ))}
+          <div style={{borderTop:"1px solid #F1F5F9",paddingTop:14,marginTop:4}}>
+            <div style={{fontSize:14,fontWeight:600,marginBottom:10}}>✏️ 댓글 작성</div>
+            <input style={{...inp,marginBottom:8}} placeholder="이름을 입력하세요" value={name} onChange={e=>setName(e.target.value)}/>
+            <textarea style={{...inp,minHeight:80,marginBottom:10,display:"block"}} placeholder="내용을 입력하세요..." value={msg} onChange={e=>setMsg(e.target.value)}/>
+            <button onClick={addCom} style={{background:"linear-gradient(135deg,#1E3A5F,#2D6A9F)",color:"#fff",border:"none",borderRadius:8,padding:"10px 20px",fontWeight:600,cursor:"pointer",fontSize:14}}>댓글 등록</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
