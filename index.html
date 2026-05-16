@@ -89,6 +89,124 @@ const WORDS = [
   {ref:"갈라디아서 5:22-23",label:"열매 맺는 삶 · 3막",text:"오직 성령의 열매는 사랑과 희락과 화평과 오래 참음과 자비와 양선과 충성과 온유와 절제니 이같은 것을 금지할 법이 없느니라",color:C.mint,colorL:C.mintL,colorD:C.mintD},
 ];
 
+const SONGS = [
+  {
+    title:"보라 새것이",
+    file:"보라 새것이.mp3",
+    color:C.sky,colorL:C.skyL,colorD:C.skyD,
+    lyrics:`[Verse]
+하나님이 나를 만드셨어
+세상 하나뿐인 나를
+실수해도 괜찮아 넘어져도 괜찮아
+하나님은 나를 사랑해
+
+[Chorus]
+나는 NEW ME 새로운 나야
+하나님 눈에 나는 특별해
+이전 것은 지나갔어
+보라 새것이 됐어
+나는 NEW ME 하나님의 자녀
+
+[Verse 2]
+예수님이 나를 바꾸셨어
+진짜 내가 됐어
+무서워도 괜찮아 혼자여도 괜찮아
+성령님이 함께하시니까
+
+[Chorus]
+나는 NEW ME 새로운 나야
+하나님 눈에 나는 특별해
+이전 것은 지나갔어
+보라 새것이 됐어
+나는 NEW ME 하나님의 자녀
+
+[Outro]
+NEW ME NEW ME
+나는 하나님 거야
+NEW ME NEW ME
+나는 새롭게 태어났어`
+  },
+  {
+    title:"새로운 피조물",
+    file:"새로운 피조물.mp3",
+    color:C.pur,colorL:C.purL,colorD:C.purD,
+    lyrics:`[Intro]
+새롭게 하시네
+나를 새롭게 하시네
+
+[Verse 1]
+어제의 나를 지나
+오늘을 살아가
+주 안에서 나는
+새 사람이 되네
+
+[Verse 2]
+작은 내 모습도
+주님이 아시고
+그 사랑 안에서
+다시 태어나네
+
+[Chorus]
+나는 새 사람이에요 (HEY!)
+주 안에서 살아가요 (HEY!)
+이전 것은 지나가고
+새 것이 되었네
+
+나는 기뻐 노래해요 (HEY!)
+주 사랑 안에서 (HEY!)
+나의 삶을 드려요
+THE NEW ME! THE NEW ME!
+
+[Bridge]
+누구든지 주 안에 있으면
+새로운 피조물이라
+이전 것은 지나갔으니
+보라 새 것이 되었도다
+
+[Outro]
+새롭게 하시네
+나를 새롭게 하시네`
+  },
+  {
+    title:"새로운 나",
+    file:"새로운 나.mp3",
+    color:C.mint,colorL:C.mintL,colorD:C.mintD,
+    lyrics:`[Intro]
+NEW ME! NEW ME!
+
+[Verse]
+세상이 말한 내 모습 말고
+주님이 부르신 그 이름
+넘어져도 다시 일어나
+주 안에서 난 새로워
+
+[Pre-Chorus]
+지난 어둠은 지나가고
+새로운 날이 시작돼
+두 손 들고 함께 외쳐
+NEW ME!
+
+[Chorus]
+NEW ME! 다시 살아나
+NEW ME! 우릴 새롭게 해
+함께 노래해
+우린 혼자가 아냐
+예수 안에 새로워져!
+
+[Bridge]
+나는 새로워졌어!
+다시 일어섰어!
+주님 안에 자유해!
+함께 외쳐봐!
+
+[Final Chorus]
+NEW ME! 다시 살아나
+NEW ME! 우릴 새롭게 해
+함께 노래해
+새로운 나 새로운 우리`
+  },
+];
+
 const RES = [
   {title:"세션 1-2 교재",desc:"1막 — 정체성 발견",icon:"📖",bg:C.skyL,tc:C.skyD,tag:"1막"},
   {title:"세션 3-4 교재",desc:"2막 — 변화의 과정",icon:"📖",bg:C.purL,tc:C.purD,tag:"2막"},
@@ -108,6 +226,21 @@ const DAY_COLORS = [
 
 function pill(bg, tc) {
   return {display:"inline-block",background:bg,color:tc,borderRadius:20,padding:"3px 10px",fontSize:11,fontWeight:600};
+}
+
+function SongCard({song}) {
+  const [open, setOpen] = useState(false);
+  return e("div",{style:{borderRadius:12,overflow:"hidden",marginBottom:10,border:"1px solid "+song.colorL}},
+    e("div",{style:{background:song.colorL,padding:"12px 14px",display:"flex",alignItems:"center",gap:10}},
+      e("div",{style:{fontSize:22}},"🎵"),
+      e("div",{style:{flex:1}},
+        e("div",{style:{fontWeight:700,fontSize:14,color:song.colorD}},song.title),
+        e("audio",{controls:true,style:{width:"100%",marginTop:6,height:32},src:song.file})
+      ),
+      e("button",{onClick:()=>setOpen(o=>!o),style:{background:song.color,color:"#fff",border:"none",borderRadius:8,padding:"6px 12px",fontSize:12,fontWeight:600,cursor:"pointer",flexShrink:0}},open?"가사 닫기":"가사 보기")
+    ),
+    open && e("div",{style:{background:"#fff",padding:"14px 16px",whiteSpace:"pre-line",fontSize:13,lineHeight:2,color:"#334155",borderTop:"1px solid "+song.colorL}},song.lyrics)
+  );
 }
 
 function App() {
@@ -440,6 +573,12 @@ function App() {
         e("div",{style:{fontSize:16,fontWeight:700,marginBottom:12}},"🎬 영상 자료"),
         e("div",{style:{position:"relative",paddingBottom:"56.25%",height:0,borderRadius:10,overflow:"hidden"}},
           e("iframe",{src:"https://www.youtube.com/embed/miKvQ86PZ9I",title:"캠프 영상",frameBorder:"0",allow:"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",allowFullScreen:true,style:{position:"absolute",top:0,left:0,width:"100%",height:"100%"}})
+        )
+      ),
+      e("div",{style:card},
+        e("div",{style:{fontSize:16,fontWeight:700,marginBottom:14}},"🎵 주제 찬양"),
+        SONGS.map((song,si)=>
+          e(SongCard,{key:si,song,inp})
         )
       ),
       e("div",{style:card},
