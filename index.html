@@ -363,7 +363,11 @@ function App() {
     showToast("삭제되었습니다");
   }
 
-  async function addSched() {
+  async function updateOwner(id, owner) {
+    const updated = sched.map(s => s.id===id ? {...s, owner} : s);
+    if (db.current) await db.current.ref("schedule").set(updated);
+    else setSched(updated);
+  }
     if (!schedForm.day.trim()||!schedForm.time.trim()||!schedForm.prog.trim()) {
       showToast("날짜·시간·프로그램을 모두 입력해주세요","err"); return;
     }
@@ -574,7 +578,12 @@ function App() {
                   e("div",{style:{minWidth:110,fontSize:12,color:C.tm}},it.time),
                   e("div",{style:{fontSize:16}},it.icon),
                   e("div",{style:{fontSize:14,flex:1}},it.prog),
-                  it.owner && e("span",{style:{fontSize:12,color:C.white,background:dc,borderRadius:20,padding:"2px 10px",flexShrink:0,whiteSpace:"nowrap"}},it.owner),
+                  e("input",{
+                    placeholder:"담당자",
+                    defaultValue:it.owner||"",
+                    onBlur:ev=>updateOwner(it.id, ev.target.value),
+                    style:{width:90,padding:"4px 8px",borderRadius:8,border:"1px solid "+dcL,fontSize:12,outline:"none",background:dcL,color:dcD,fontWeight:600,textAlign:"center",flexShrink:0}
+                  }),
                   e("button",{onClick:()=>delSched(it.id),style:{background:"none",border:"none",cursor:"pointer",fontSize:13,color:C.tl,padding:"2px 4px",flexShrink:0}},"✕")
                 )
               )
