@@ -1,18 +1,19 @@
 <!DOCTYPE html>
-<html lang="ko"><head>
+<html lang="ko">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NEW ME — 2026 교육부 연합캠프</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F0F4FF; min-height: 100vh; padding: 16px; }
-input, textarea, button, select { font-family: inherit; }
+input, textarea, button { font-family: inherit; }
 textarea { resize: vertical; }
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); padding: 10px 22px; border-radius: 30px; font-size: 13px; font-weight: 600; color: #fff; z-index: 999; white-space: nowrap; pointer-events: none; }
 </style>
 </head>
 <body>
-<div id="root"></div>
+<div id="root"><div style="text-align:center;padding:4rem;color:#64748B">⏳ 로딩 중...</div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
@@ -42,36 +43,6 @@ const C = {
   navy:"#1E3A5F",navyM:"#2D6A9F",
   white:"#fff",gray:"#F8FAFC",td:"#1E293B",tm:"#475569",tl:"#94A3B8"
 };
-
-// ── 2번째 확정 시간표 프리셋 ──────────────────────────────
-const PRESET_SCHEDULE = [
-  // Day 1
-  {id:10001,day:"7월 17일 (목)",time:"14:00",prog:"등록 · 입소 · 조 편성",icon:"🚪",dur:"60분",tag:"준비",tagColor:"#64748B",tagBg:"#F1F5F9"},
-  {id:10002,day:"7월 17일 (목)",time:"15:00",prog:"찬양 (20분) + 설교 1 — 나는 누구인가",icon:"🎵",dur:"40분",tag:"1막",tagColor:"#0369A1",tagBg:"#E0F7FF"},
-  {id:10003,day:"7월 17일 (목)",time:"15:40",prog:"활동 1 — 정체성 탐색 게임",icon:"🎮",dur:"40분",tag:"활동",tagColor:"#B45309",tagBg:"#FEF9C3"},
-  {id:10004,day:"7월 17일 (목)",time:"16:20",prog:"간식 시간",icon:"🍪",dur:"20분",tag:"휴식",tagColor:"#065F46",tagBg:"#D1FAE5"},
-  {id:10005,day:"7월 17일 (목)",time:"16:40",prog:"분반공부 1 — BEFORE & AFTER 나누기",icon:"👥",dur:"15분",tag:"분반",tagColor:"#5B21B6",tagBg:"#EDE9FE"},
-  {id:10006,day:"7월 17일 (목)",time:"16:55",prog:"저녁 식사",icon:"🍱",dur:"60분",tag:"식사",tagColor:"#64748B",tagBg:"#F1F5F9"},
-  {id:10007,day:"7월 17일 (목)",time:"17:55",prog:"찬양 (20분) + 설교 2 — 어떻게 달라지는가",icon:"🎵",dur:"40분",tag:"2막",tagColor:"#5B21B6",tagBg:"#EDE9FE"},
-  {id:10008,day:"7월 17일 (목)",time:"18:35",prog:"활동 2 — 나이트 팀 레크리에이션",icon:"🏃",dur:"40분",tag:"활동",tagColor:"#B45309",tagBg:"#FEF9C3"},
-  {id:10009,day:"7월 17일 (목)",time:"19:15",prog:"분반공부 2 — 내 삶의 세상 기준 찾기",icon:"👥",dur:"15분",tag:"분반",tagColor:"#5B21B6",tagBg:"#EDE9FE"},
-  {id:10010,day:"7월 17일 (목)",time:"19:30",prog:"나이트 워십 & 기도회",icon:"🙏",dur:"50분",tag:"예배",tagColor:"#991B1B",tagBg:"#FEE2E2"},
-  {id:10011,day:"7월 17일 (목)",time:"20:20",prog:"캠프파이어 & 캔들라이트",icon:"🔥",dur:"60분",tag:"특별",tagColor:"#9A3412",tagBg:"#FFF7ED"},
-  {id:10012,day:"7월 17일 (목)",time:"21:20",prog:"자유 시간 & 친교",icon:"😄",dur:"60분",tag:"자유",tagColor:"#64748B",tagBg:"#F1F5F9"},
-  {id:10013,day:"7월 17일 (목)",time:"22:20",prog:"취침 준비 & 점호",icon:"📋",dur:"70분",tag:"행정",tagColor:"#64748B",tagBg:"#F1F5F9"},
-  {id:10014,day:"7월 17일 (목)",time:"23:30",prog:"취침",icon:"😴",dur:"",tag:"",tagColor:"#64748B",tagBg:"#F1F5F9"},
-  // Day 2
-  {id:10015,day:"7월 18일 (금)",time:"08:00",prog:"아침 식사",icon:"🍱",dur:"60분",tag:"식사",tagColor:"#64748B",tagBg:"#F1F5F9"},
-  {id:10016,day:"7월 18일 (금)",time:"09:00",prog:"찬양 (20분) + 설교 3 — 어떻게 살 것인가",icon:"🎵",dur:"40분",tag:"3막",tagColor:"#065F46",tagBg:"#D1FAE5"},
-  {id:10017,day:"7월 18일 (금)",time:"09:40",prog:"분반공부 3 — NEW ME 나의 선언",icon:"👥",dur:"15분",tag:"분반",tagColor:"#5B21B6",tagBg:"#EDE9FE"},
-  {id:10018,day:"7월 18일 (금)",time:"09:55",prog:"활동 3 — 성령의 열매 나무 만들기",icon:"🌳",dur:"40분",tag:"활동",tagColor:"#B45309",tagBg:"#FEF9C3"},
-  {id:10019,day:"7월 18일 (금)",time:"10:35",prog:"간식 시간",icon:"🍪",dur:"20분",tag:"간식",tagColor:"#065F46",tagBg:"#D1FAE5"},
-  {id:10020,day:"7월 18일 (금)",time:"10:55",prog:"자유 시간 & 짐 정리",icon:"🧳",dur:"65분",tag:"자유",tagColor:"#64748B",tagBg:"#F1F5F9"},
-  {id:10021,day:"7월 18일 (금)",time:"12:00",prog:"점심 식사",icon:"🍱",dur:"60분",tag:"식사",tagColor:"#64748B",tagBg:"#F1F5F9"},
-  {id:10022,day:"7월 18일 (금)",time:"13:00",prog:"활동 4 — NEW ME 선언식 & 카드 교환",icon:"🏆",dur:"40분",tag:"활동",tagColor:"#B45309",tagBg:"#FEF9C3"},
-  {id:10023,day:"7월 18일 (금)",time:"13:40",prog:"파송 예배 & 퇴소 준비",icon:"✨",dur:"20분",tag:"피날레",tagColor:"#991B1B",tagBg:"#FEE2E2"},
-  {id:10024,day:"7월 18일 (금)",time:"14:00",prog:"퇴소",icon:"🚪",dur:"",tag:"",tagColor:"#64748B",tagBg:"#F1F5F9"},
-];
 
 const DEFAULT_CL = [
   {id:1,cat:"교재 및 자료",item:"세션별 강의 교재 인쇄 (6세션)",done:false},
@@ -119,9 +90,121 @@ const WORDS = [
 ];
 
 const SONGS = [
-  {title:"보라 새것이",file:"보라 새것이.mp3",color:C.sky,colorL:C.skyL,colorD:C.skyD,lyrics:`[Verse]\n하나님이 나를 만드셨어\n세상 하나뿐인 나를\n실수해도 괜찮아 넘어져도 괜찮아\n하나님은 나를 사랑해\n\n[Chorus]\n나는 NEW ME 새로운 나야\n하나님 눈에 나는 특별해\n이전 것은 지나갔어\n보라 새것이 됐어\n나는 NEW ME 하나님의 자녀\n\n[Verse 2]\n예수님이 나를 바꾸셨어\n진짜 내가 됐어\n무서워도 괜찮아 혼자여도 괜찮아\n성령님이 함께하시니까\n\n[Chorus]\n나는 NEW ME 새로운 나야\n하나님 눈에 나는 특별해\n이전 것은 지나갔어\n보라 새것이 됐어\n나는 NEW ME 하나님의 자녀\n\n[Outro]\nNEW ME NEW ME\n나는 하나님 거야\nNEW ME NEW ME\n나는 새롭게 태어났어`},
-  {title:"새로운 피조물",file:"새로운 피조물.mp3",color:C.pur,colorL:C.purL,colorD:C.purD,lyrics:`[Intro]\n새롭게 하시네\n나를 새롭게 하시네\n\n[Verse 1]\n어제의 나를 지나\n오늘을 살아가\n주 안에서 나는\n새 사람이 되네\n\n[Chorus]\n나는 새 사람이에요 (HEY!)\n주 안에서 살아가요 (HEY!)\n이전 것은 지나가고\n새 것이 되었네\n\n[Bridge]\n누구든지 주 안에 있으면\n새로운 피조물이라\n이전 것은 지나갔으니\n보라 새 것이 되었도다`},
-  {title:"새로운 나",file:"새로운 나.mp3",color:C.mint,colorL:C.mintL,colorD:C.mintD,lyrics:`[Intro]\nNEW ME! NEW ME!\n\n[Verse]\n세상이 말한 내 모습 말고\n주님이 부르신 그 이름\n넘어져도 다시 일어나\n주 안에서 난 새로워\n\n[Chorus]\nNEW ME! 다시 살아나\nNEW ME! 우릴 새롭게 해\n함께 노래해\n우린 혼자가 아냐\n예수 안에 새로워져!`},
+  {
+    title:"보라 새것이",
+    file:"보라 새것이.mp3",
+    color:C.sky,colorL:C.skyL,colorD:C.skyD,
+    lyrics:`[Verse]
+하나님이 나를 만드셨어
+세상 하나뿐인 나를
+실수해도 괜찮아 넘어져도 괜찮아
+하나님은 나를 사랑해
+
+[Chorus]
+나는 NEW ME 새로운 나야
+하나님 눈에 나는 특별해
+이전 것은 지나갔어
+보라 새것이 됐어
+나는 NEW ME 하나님의 자녀
+
+[Verse 2]
+예수님이 나를 바꾸셨어
+진짜 내가 됐어
+무서워도 괜찮아 혼자여도 괜찮아
+성령님이 함께하시니까
+
+[Chorus]
+나는 NEW ME 새로운 나야
+하나님 눈에 나는 특별해
+이전 것은 지나갔어
+보라 새것이 됐어
+나는 NEW ME 하나님의 자녀
+
+[Outro]
+NEW ME NEW ME
+나는 하나님 거야
+NEW ME NEW ME
+나는 새롭게 태어났어`
+  },
+  {
+    title:"새로운 피조물",
+    file:"새로운 피조물.mp3",
+    color:C.pur,colorL:C.purL,colorD:C.purD,
+    lyrics:`[Intro]
+새롭게 하시네
+나를 새롭게 하시네
+
+[Verse 1]
+어제의 나를 지나
+오늘을 살아가
+주 안에서 나는
+새 사람이 되네
+
+[Verse 2]
+작은 내 모습도
+주님이 아시고
+그 사랑 안에서
+다시 태어나네
+
+[Chorus]
+나는 새 사람이에요 (HEY!)
+주 안에서 살아가요 (HEY!)
+이전 것은 지나가고
+새 것이 되었네
+
+나는 기뻐 노래해요 (HEY!)
+주 사랑 안에서 (HEY!)
+나의 삶을 드려요
+THE NEW ME! THE NEW ME!
+
+[Bridge]
+누구든지 주 안에 있으면
+새로운 피조물이라
+이전 것은 지나갔으니
+보라 새 것이 되었도다
+
+[Outro]
+새롭게 하시네
+나를 새롭게 하시네`
+  },
+  {
+    title:"새로운 나",
+    file:"새로운 나.mp3",
+    color:C.mint,colorL:C.mintL,colorD:C.mintD,
+    lyrics:`[Intro]
+NEW ME! NEW ME!
+
+[Verse]
+세상이 말한 내 모습 말고
+주님이 부르신 그 이름
+넘어져도 다시 일어나
+주 안에서 난 새로워
+
+[Pre-Chorus]
+지난 어둠은 지나가고
+새로운 날이 시작돼
+두 손 들고 함께 외쳐
+NEW ME!
+
+[Chorus]
+NEW ME! 다시 살아나
+NEW ME! 우릴 새롭게 해
+함께 노래해
+우린 혼자가 아냐
+예수 안에 새로워져!
+
+[Bridge]
+나는 새로워졌어!
+다시 일어섰어!
+주님 안에 자유해!
+함께 외쳐봐!
+
+[Final Chorus]
+NEW ME! 다시 살아나
+NEW ME! 우릴 새롭게 해
+함께 노래해
+새로운 나 새로운 우리`
+  },
 ];
 
 const RES = [
@@ -135,34 +218,54 @@ const RES = [
   {title:"일정표 인쇄용",desc:"전체 세션 시간표",icon:"📅",bg:C.mintL,tc:C.mintD,tag:"일정"},
 ];
 
-const ICONS = ["📋","🎵","📖","🍪","👥","🍱","🎨","🎶","🙏","✨","🏆","💬","📸","⚽","🎤","🕐","🎮","🏃","🌳","🧳","🚪","😴","🍕","☕","🎯","🛏","🔔","🎉"];
-const TAG_OPTIONS = ["","1막","2막","3막","활동","분반","예배","식사","간식","자유","휴식","준비","행정","피날레","특별"];
-const TAG_COLORS = {
-  "1막":  {tc:"#0369A1", bg:"#E0F7FF"},
-  "2막":  {tc:"#5B21B6", bg:"#EDE9FE"},
-  "3막":  {tc:"#065F46", bg:"#D1FAE5"},
-  "활동": {tc:"#B45309", bg:"#FEF9C3"},
-  "분반": {tc:"#5B21B6", bg:"#EDE9FE"},
-  "예배": {tc:"#991B1B", bg:"#FEE2E2"},
-  "식사": {tc:"#374151", bg:"#F3F4F6"},
-  "간식": {tc:"#065F46", bg:"#D1FAE5"},
-  "자유": {tc:"#374151", bg:"#F3F4F6"},
-  "휴식": {tc:"#065F46", bg:"#D1FAE5"},
-  "준비": {tc:"#374151", bg:"#F3F4F6"},
-  "행정": {tc:"#374151", bg:"#F3F4F6"},
-  "피날레":{tc:"#991B1B", bg:"#FEE2E2"},
-  "특별": {tc:"#9A3412", bg:"#FFF7ED"},
-  "":     {tc:"#374151", bg:"#F3F4F6"},
-};
+const PRESET_SCHED = [
+  // 17일 (금)
+  {id:1,day:"7월 17일 (금)",time:"14:00",prog:"등록 / 명찰",icon:"📋"},
+  {id:2,day:"7월 17일 (금)",time:"14:20",prog:"캠프 오리엔테이션",icon:"📋"},
+  {id:3,day:"7월 17일 (금)",time:"14:40",prog:"아이스브레이킹",icon:"⚽"},
+  {id:4,day:"7월 17일 (금)",time:"15:00",prog:"찬양",icon:"🎵"},
+  {id:5,day:"7월 17일 (금)",time:"15:20",prog:"말씀 1",icon:"📖"},
+  {id:6,day:"7월 17일 (금)",time:"15:40",prog:"분반공부 1",icon:"👥"},
+  {id:7,day:"7월 17일 (금)",time:"16:00",prog:"활동 1 — 쿠키",icon:"🎨"},
+  {id:8,day:"7월 17일 (금)",time:"16:30",prog:"활동 2 — 워터밤",icon:"🎨"},
+  {id:9,day:"7월 17일 (금)",time:"17:20",prog:"조별 활동",icon:"👥"},
+  {id:10,day:"7월 17일 (금)",time:"17:50",prog:"식사 및 휴식",icon:"🍱"},
+  {id:11,day:"7월 17일 (금)",time:"18:40",prog:"찬양",icon:"🎵"},
+  {id:12,day:"7월 17일 (금)",time:"19:00",prog:"말씀 2",icon:"📖"},
+  {id:13,day:"7월 17일 (금)",time:"19:20",prog:"분반공부 2",icon:"👥"},
+  {id:14,day:"7월 17일 (금)",time:"19:40",prog:"공동체 훈련",icon:"👥"},
+  {id:15,day:"7월 17일 (금)",time:"20:20",prog:"캔들라이트 기도회",icon:"🙏"},
+  {id:16,day:"7월 17일 (금)",time:"20:40",prog:"캠프파이어",icon:"🔥"},
+  {id:17,day:"7월 17일 (금)",time:"21:30",prog:"간식",icon:"🍊"},
+  {id:18,day:"7월 17일 (금)",time:"22:00",prog:"자유시간",icon:"✨"},
+  {id:19,day:"7월 17일 (금)",time:"23:00",prog:"취침",icon:"🌙"},
+  // 18일 (토)
+  {id:20,day:"7월 18일 (토)",time:"08:00",prog:"아침식사",icon:"🍱"},
+  {id:21,day:"7월 18일 (토)",time:"08:40",prog:"개인 정비",icon:"📋"},
+  {id:22,day:"7월 18일 (토)",time:"09:00",prog:"찬양",icon:"🎵"},
+  {id:23,day:"7월 18일 (토)",time:"09:20",prog:"말씀 3",icon:"📖"},
+  {id:24,day:"7월 18일 (토)",time:"09:40",prog:"분반공부 3",icon:"👥"},
+  {id:25,day:"7월 18일 (토)",time:"10:00",prog:"활동 3 — 슈링클스키링",icon:"🎨"},
+  {id:26,day:"7월 18일 (토)",time:"10:40",prog:"조별 활동",icon:"👥"},
+  {id:27,day:"7월 18일 (토)",time:"11:20",prog:"활동 4",icon:"🎨"},
+  {id:28,day:"7월 18일 (토)",time:"12:00",prog:"점심식사",icon:"🍱"},
+  {id:29,day:"7월 18일 (토)",time:"12:50",prog:"구호 연습",icon:"🎤"},
+  {id:30,day:"7월 18일 (토)",time:"13:20",prog:"짐 정리",icon:"📋"},
+  {id:31,day:"7월 18일 (토)",time:"13:40",prog:"폐회",icon:"🙏"},
+];
+
+const ICONS = ["📋","🎵","📖","🍊","👥","🍱","🎨","🎶","🙏","✨","🏆","💬","📸","⚽","🎤","🕐"];
 const DAY_COLORS = [
   [C.sky,C.skyL,C.skyD],[C.mint,C.mintL,C.mintD],[C.pur,C.purL,C.purD],
   [C.coral,C.coralL,C.coralD],[C.sun,C.sunL,C.sunD]
 ];
 
-function pill(bg,tc){return{display:"inline-block",background:bg,color:tc,borderRadius:20,padding:"3px 10px",fontSize:11,fontWeight:600};}
+function pill(bg, tc) {
+  return {display:"inline-block",background:bg,color:tc,borderRadius:20,padding:"3px 10px",fontSize:11,fontWeight:600};
+}
 
-function SongCard({song}){
-  const [open,setOpen]=useState(false);
+function SongCard({song}) {
+  const [open, setOpen] = useState(false);
   return e("div",{style:{borderRadius:12,overflow:"hidden",marginBottom:10,border:"1px solid "+song.colorL}},
     e("div",{style:{background:song.colorL,padding:"12px 14px",display:"flex",alignItems:"center",gap:10}},
       e("div",{style:{fontSize:22}},"🎵"),
@@ -172,251 +275,129 @@ function SongCard({song}){
       ),
       e("button",{onClick:()=>setOpen(o=>!o),style:{background:song.color,color:"#fff",border:"none",borderRadius:8,padding:"6px 12px",fontSize:12,fontWeight:600,cursor:"pointer",flexShrink:0}},open?"가사 닫기":"가사 보기")
     ),
-    open&&e("div",{style:{background:"#fff",padding:"14px 16px",whiteSpace:"pre-line",fontSize:13,lineHeight:2,color:"#334155",borderTop:"1px solid "+song.colorL}},song.lyrics)
+    open && e("div",{style:{background:"#fff",padding:"14px 16px",whiteSpace:"pre-line",fontSize:13,lineHeight:2,color:"#334155",borderTop:"1px solid "+song.colorL}},song.lyrics)
   );
 }
 
-// ── 인라인 수정 가능한 일정 행 ────────────────────────────
-function SchedRow({item, onSave, onDelete, isLast}){
-  const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState({...item});
+function App() {
+  const [tab, setTab] = useState("home");
+  const [cl, setCl] = useState(DEFAULT_CL);
+  const [coms, setComs] = useState([]);
+  const [sched, setSched] = useState([]);
+  const [name, setName] = useState("");
+  const [msg, setMsg] = useState("");
+  const [cd, setCd] = useState("");
+  const [connected, setConnected] = useState(false);
+  const [toast, setToast] = useState(null);
+  const [wordIdx, setWordIdx] = useState(0);
+  const [schedForm, setSchedForm] = useState({day:"",time:"",prog:"",icon:"📋"});
+  const db = useRef(null);
+  const toastTimer = useRef(null);
 
-  function save(){
-    const tagMeta = TAG_COLORS[draft.tag]||TAG_COLORS[""];
-    onSave({...draft, tagColor:tagMeta.tc, tagBg:tagMeta.bg});
-    setEditing(false);
-  }
-  function cancel(){ setDraft({...item}); setEditing(false); }
-
-  const rowBase = {borderBottom:isLast?"none":"1px solid #F1F5F9", padding:"10px 0"};
-
-  if(editing) return e("div",{style:{...rowBase, background:"#F8FAFC", borderRadius:10, padding:"10px 10px", margin:"4px 0"}},
-    // time + icon row
-    e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:8}},
-      e("input",{
-        value:draft.time, onChange:ev=>setDraft(d=>({...d,time:ev.target.value})),
-        placeholder:"시간 (예: 09:00)",
-        style:{padding:"7px 10px",borderRadius:8,border:"1px solid #CBD5E1",fontSize:13,outline:"none"}
-      }),
-      e("input",{
-        value:draft.dur, onChange:ev=>setDraft(d=>({...d,dur:ev.target.value})),
-        placeholder:"소요시간 (예: 40분)",
-        style:{padding:"7px 10px",borderRadius:8,border:"1px solid #CBD5E1",fontSize:13,outline:"none"}
-      })
-    ),
-    // prog
-    e("input",{
-      value:draft.prog, onChange:ev=>setDraft(d=>({...d,prog:ev.target.value})),
-      placeholder:"프로그램명",
-      style:{width:"100%",padding:"7px 10px",borderRadius:8,border:"1px solid #CBD5E1",fontSize:13,outline:"none",marginBottom:8}
-    }),
-    // icon + tag row
-    e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:10}},
-      e("div",null,
-        e("div",{style:{fontSize:11,color:"#94A3B8",marginBottom:4}},"아이콘"),
-        e("div",{style:{display:"flex",flexWrap:"wrap",gap:4}},
-          ICONS.map(ic=>e("button",{key:ic,onClick:()=>setDraft(d=>({...d,icon:ic})),
-            style:{width:30,height:30,borderRadius:6,border:"2px solid "+(draft.icon===ic?"#38BDF8":"#E2E8F0"),
-                   background:draft.icon===ic?"#E0F7FF":"#fff",cursor:"pointer",fontSize:14}},ic))
-        )
-      ),
-      e("div",null,
-        e("div",{style:{fontSize:11,color:"#94A3B8",marginBottom:4}},"구분 태그"),
-        e("select",{
-          value:draft.tag,
-          onChange:ev=>setDraft(d=>({...d,tag:ev.target.value})),
-          style:{width:"100%",padding:"7px 10px",borderRadius:8,border:"1px solid #CBD5E1",fontSize:13,outline:"none",background:"#fff"}
-        },
-          TAG_OPTIONS.map(t=>e("option",{key:t,value:t},t||"(없음)"))
-        )
-      )
-    ),
-    // action buttons
-    e("div",{style:{display:"flex",gap:6}},
-      e("button",{onClick:save,style:{flex:1,background:"linear-gradient(135deg,#1E3A5F,#2D6A9F)",color:"#fff",border:"none",borderRadius:8,padding:"8px 0",fontWeight:600,cursor:"pointer",fontSize:13}},"✓ 저장"),
-      e("button",{onClick:cancel,style:{padding:"8px 14px",borderRadius:8,border:"1px solid #E2E8F0",background:"#fff",cursor:"pointer",fontSize:13,color:"#64748B"}},"취소"),
-      e("button",{onClick:()=>onDelete(item.id),style:{padding:"8px 14px",borderRadius:8,border:"none",background:"#FEE2E2",cursor:"pointer",fontSize:13,color:"#991B1B"}},"삭제")
-    )
-  );
-
-  const tagMeta = TAG_COLORS[item.tag]||TAG_COLORS[""];
-  return e("div",{style:{...rowBase,display:"flex",gap:10,alignItems:"center"}},
-    e("div",{style:{minWidth:56,fontSize:12,color:C.tm,flexShrink:0}},item.time),
-    e("div",{style:{fontSize:16,flexShrink:0}},item.icon),
-    e("div",{style:{flex:1,minWidth:0}},
-      e("div",{style:{fontSize:14,fontWeight:500,color:C.td,lineHeight:1.4}},item.prog),
-      e("div",{style:{display:"flex",gap:6,marginTop:3,alignItems:"center",flexWrap:"wrap"}},
-        item.dur && e("span",{style:{fontSize:11,color:C.tl}},item.dur),
-        item.tag && e("span",{style:{...pill(tagMeta.bg,tagMeta.tc),fontSize:10,padding:"2px 7px"}},item.tag)
-      )
-    ),
-    e("button",{onClick:()=>setEditing(true),
-      style:{background:"none",border:"1px solid #E2E8F0",borderRadius:7,cursor:"pointer",fontSize:12,color:C.tm,padding:"4px 8px",flexShrink:0,whiteSpace:"nowrap"}
-    },"✏️ 수정")
-  );
-}
-
-function App(){
-  const [tab,setTab]=useState("home");
-  const [cl,setCl]=useState(DEFAULT_CL);
-  const [coms,setComs]=useState([]);
-  const [sched,setSched]=useState([]);
-  const [name,setName]=useState("");
-  const [msg,setMsg]=useState("");
-  const [cd,setCd]=useState("");
-  const [connected,setConnected]=useState(false);
-  const [toast,setToast]=useState(null);
-  const [wordIdx,setWordIdx]=useState(0);
-  const [schedForm,setSchedForm]=useState({day:"",time:"",prog:"",icon:"📋",dur:"",tag:""});
-  const [showAddForm,setShowAddForm]=useState(false);
-  const [presetLoaded,setPresetLoaded]=useState(false);
-  const db=useRef(null);
-  const toastTimer=useRef(null);
-
-  function showToast(m,type="ok"){
-    if(toastTimer.current) clearTimeout(toastTimer.current);
+  function showToast(m, type="ok") {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
     setToast({m,type});
-    toastTimer.current=setTimeout(()=>setToast(null),2500);
+    toastTimer.current = setTimeout(()=>setToast(null), 2500);
   }
 
   useEffect(()=>{
-    try{
-      const app=firebase.apps.length?firebase.app():firebase.initializeApp(FIREBASE_CONFIG);
-      db.current=firebase.database(app);
-      db.current.ref(".info/connected").on("value",s=>setConnected(!!s.val()));
-      db.current.ref("checklist").on("value",s=>{
-        const v=s.val();
-        if(v) setCl(Array.isArray(v)?v:Object.values(v));
+    try {
+      const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(FIREBASE_CONFIG);
+      db.current = firebase.database(app);
+      db.current.ref(".info/connected").on("value", s => setConnected(!!s.val()));
+      db.current.ref("checklist").on("value", s => {
+        const v = s.val();
+        if (v) setCl(Array.isArray(v) ? v : Object.values(v));
         else db.current.ref("checklist").set(DEFAULT_CL);
       });
-      db.current.ref("comments").on("value",s=>{
-        const v=s.val();
-        setComs(v?Object.values(v).sort((a,b)=>a.id-b.id):[]);
+      db.current.ref("comments").on("value", s => {
+        const v = s.val();
+        setComs(v ? Object.values(v).sort((a,b)=>a.id-b.id) : []);
       });
-      db.current.ref("schedule").on("value",s=>{
-        const v=s.val();
-        if(v){
-          const arr=Array.isArray(v)?v:Object.values(v);
-          setSched(arr);
-          setPresetLoaded(true);
-        }
+      db.current.ref("schedule").on("value", s => {
+        const v = s.val();
+        setSched(v ? (Array.isArray(v) ? v : Object.values(v)) : PRESET_SCHED);
       });
-    }catch(err){showToast("Firebase 오류: "+err.message,"err");}
-    return()=>{
-      if(db.current){
+    } catch(err) { showToast("Firebase 오류: "+err.message,"err"); }
+    return () => {
+      if (db.current) {
         ["checklist","comments","schedule",".info/connected"].forEach(r=>db.current.ref(r).off());
       }
     };
-  },[]);
+  }, []);
 
   useEffect(()=>{
-    const target=new Date("2026-07-17T09:00:00");
-    const tick=()=>{
-      const diff=target-new Date();
-      if(diff<=0){setCd("D-Day! 🎉");return;}
-      const d=Math.floor(diff/86400000);
-      const h=Math.floor((diff%86400000)/3600000);
-      const m=Math.floor((diff%3600000)/60000);
+    const target = new Date("2026-07-17T09:00:00");
+    const tick = () => {
+      const diff = target - new Date();
+      if (diff <= 0) { setCd("D-Day! 🎉"); return; }
+      const d = Math.floor(diff/86400000);
+      const h = Math.floor((diff%86400000)/3600000);
+      const m = Math.floor((diff%3600000)/60000);
       setCd("D-"+d+"일 "+h+"시간 "+m+"분");
     };
     tick();
-    const iv=setInterval(tick,60000);
-    return()=>clearInterval(iv);
-  },[]);
+    const iv = setInterval(tick, 60000);
+    return () => clearInterval(iv);
+  }, []);
 
-  async function check(id){
-    const updated=cl.map(c=>c.id===id?{...c,done:!c.done}:c);
-    if(db.current) await db.current.ref("checklist").set(updated);
+  async function check(id) {
+    const updated = cl.map(c => c.id===id ? {...c,done:!c.done} : c);
+    if (db.current) await db.current.ref("checklist").set(updated);
     else setCl(updated);
     showToast("저장되었습니다 ✓");
   }
 
-  async function addCom(){
-    if(!name.trim()||!msg.trim()) return;
-    const now=new Date();
-    const tt=(now.getMonth()+1)+"/"+now.getDate()+" "+String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
-    const id=Date.now();
-    if(db.current) await db.current.ref("comments/"+id).set({id,name:name.trim(),time:tt,text:msg.trim()});
+  async function addCom() {
+    if (!name.trim()||!msg.trim()) return;
+    const now = new Date();
+    const t = (now.getMonth()+1)+"/"+now.getDate()+" "+String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
+    const id = Date.now();
+    if (db.current) await db.current.ref("comments/"+id).set({id,name:name.trim(),time:t,text:msg.trim()});
     setMsg("");
     showToast("댓글이 등록되었습니다 💬");
   }
 
-  async function delCom(id){
-    if(db.current) await db.current.ref("comments/"+id).remove();
+  async function delCom(id) {
+    if (db.current) await db.current.ref("comments/"+id).remove();
     showToast("삭제되었습니다");
   }
 
-  // 프리셋 불러오기
-  async function loadPreset(){
-    if(!window.confirm("확정 시간표(23개 항목)를 불러옵니다.\n현재 일정이 모두 교체됩니다. 계속할까요?")) return;
-    const tagged=PRESET_SCHEDULE.map(it=>{
-      const meta=TAG_COLORS[it.tag]||TAG_COLORS[""];
-      return {...it,tagColor:meta.tc,tagBg:meta.bg};
-    });
-    if(db.current) await db.current.ref("schedule").set(tagged);
-    else setSched(tagged);
-    setPresetLoaded(true);
-    showToast("확정 시간표가 불러와졌습니다 📅");
-  }
-
-  // 일정 추가
-  async function addSched(){
-    if(!schedForm.day.trim()||!schedForm.time.trim()||!schedForm.prog.trim()){
+  async function addSched() {
+    if (!schedForm.day.trim()||!schedForm.time.trim()||!schedForm.prog.trim()) {
       showToast("날짜·시간·프로그램을 모두 입력해주세요","err"); return;
     }
-    const id=Date.now();
-    const meta=TAG_COLORS[schedForm.tag]||TAG_COLORS[""];
-    const item={...schedForm,id,tagColor:meta.tc,tagBg:meta.bg};
-    const updated=[...sched,item].sort((a,b)=>a.day.localeCompare(b.day)||a.time.localeCompare(b.time));
-    if(db.current) await db.current.ref("schedule").set(updated);
+    const id = Date.now();
+    const item = {...schedForm,id};
+    const updated = [...sched,item].sort((a,b)=>a.day.localeCompare(b.day)||a.time.localeCompare(b.time));
+    if (db.current) await db.current.ref("schedule").set(updated);
     else setSched(updated);
-    setSchedForm({day:"",time:"",prog:"",icon:"📋",dur:"",tag:""});
-    setShowAddForm(false);
+    setSchedForm({day:"",time:"",prog:"",icon:"📋"});
     showToast("일정이 추가되었습니다 📅");
   }
 
-  // 일정 수정 저장
-  async function saveSched(updated_item){
-    const updated=sched.map(s=>s.id===updated_item.id?updated_item:s)
-      .sort((a,b)=>a.day.localeCompare(b.day)||a.time.localeCompare(b.time));
-    if(db.current) await db.current.ref("schedule").set(updated);
-    else setSched(updated);
-    showToast("수정되었습니다 ✓");
-  }
-
-  // 일정 삭제
-  async function delSched(id){
-    const updated=sched.filter(s=>s.id!==id);
-    if(db.current) await db.current.ref("schedule").set(updated.length?updated:null);
+  async function delSched(id) {
+    const updated = sched.filter(s=>s.id!==id);
+    if (db.current) await db.current.ref("schedule").set(updated.length?updated:null);
     else setSched(updated);
     showToast("삭제되었습니다");
   }
 
-  // 전체 초기화
-  async function clearAll(){
-    if(!window.confirm("모든 일정을 삭제합니다. 되돌릴 수 없습니다.")) return;
-    if(db.current) await db.current.ref("schedule").remove();
-    else setSched([]);
-    setPresetLoaded(false);
-    showToast("전체 삭제되었습니다");
-  }
-
-  function download(){
-    const html=document.documentElement.outerHTML;
-    const blob=new Blob([html],{type:"text/html"});
-    const a=document.createElement("a");
-    a.href=URL.createObjectURL(blob);
-    a.download="index.html";
+  function download() {
+    const html = document.documentElement.outerHTML;
+    const blob = new Blob([html],{type:"text/html"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "index.html";
     a.click();
   }
 
-  const done=cl.filter(c=>c.done).length;
-  const pct=Math.round(done/cl.length*100);
-  const cats=[...new Set(cl.map(c=>c.cat))];
-  const w=WORDS[wordIdx];
-  const days=[...new Set(sched.map(s=>s.day))];
+  const done = cl.filter(c=>c.done).length;
+  const pct = Math.round(done/cl.length*100);
+  const cats = [...new Set(cl.map(c=>c.cat))];
+  const w = WORDS[wordIdx];
 
-  const TABS=[
+  const TABS = [
     {id:"home",label:"홈",e:"🏠"},
     {id:"sessions",label:"세션",e:"📖"},
     {id:"schedule",label:"일정표",e:"📅"},
@@ -425,17 +406,17 @@ function App(){
     {id:"board",label:"게시판",e:"💬"},
   ];
 
-  const card={background:C.white,borderRadius:14,padding:"1rem 1.2rem",marginBottom:12,boxShadow:"0 1px 8px rgba(0,0,0,0.07)"};
-  const inp={width:"100%",padding:"9px 12px",borderRadius:8,border:"1px solid #E2E8F0",fontSize:14,outline:"none",background:"#fff"};
-  const progBar={background:"#E2E8F0",borderRadius:99,height:10,overflow:"hidden"};
-  const progFill=w=>({background:"linear-gradient(90deg,"+C.mint+","+C.sky+")",height:"100%",borderRadius:99,width:w+"%",transition:"width .4s"});
+  const card = {background:C.white,borderRadius:14,padding:"1rem 1.2rem",marginBottom:12,boxShadow:"0 1px 8px rgba(0,0,0,0.07)"};
+  const inp = {width:"100%",padding:"9px 12px",borderRadius:8,border:"1px solid #E2E8F0",fontSize:14,outline:"none",background:"#fff"};
+  const progBar = {background:"#E2E8F0",borderRadius:99,height:10,overflow:"hidden"};
+  const progFill = w => ({background:"linear-gradient(90deg,"+C.mint+","+C.sky+")",height:"100%",borderRadius:99,width:w+"%",transition:"width .4s"});
 
-  return e("div",{style:{maxWidth:640,margin:"0 auto"}},
+  return e("div", {style:{maxWidth:640,margin:"0 auto"}},
 
     // Toast
-    toast&&e("div",{className:"toast",style:{background:toast.type==="err"?C.coralD:C.mintD}},toast.m),
+    toast && e("div",{className:"toast",style:{background:toast.type==="err"?C.coralD:C.mintD}},toast.m),
 
-    // 다운로드
+    // 다운로드 버튼
     e("div",{style:{textAlign:"right",marginBottom:8}},
       e("button",{onClick:download,style:{background:C.td,color:"#fff",border:"none",borderRadius:8,padding:"8px 16px",fontWeight:600,cursor:"pointer",fontSize:13}},"⬇️ HTML 다운로드")
     ),
@@ -465,7 +446,7 @@ function App(){
     ),
 
     // ── 홈 ──
-    tab==="home"&&e("div",null,
+    tab==="home" && e("div",null,
       e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:12}},
         [{label:"총 세션",val:"6개",ic:"📖",bg:C.skyL,tc:C.skyD},
          {label:"준비 완료",val:pct+"%",ic:"✅",bg:C.mintL,tc:C.mintD},
@@ -516,7 +497,7 @@ function App(){
     ),
 
     // ── 세션 ──
-    tab==="sessions"&&e("div",null,
+    tab==="sessions" && e("div",null,
       SESSIONS.map((s,si)=>
         e("div",{key:si,style:card},
           e("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:14}},
@@ -556,96 +537,51 @@ function App(){
     ),
 
     // ── 일정표 ──
-    tab==="schedule"&&e("div",null,
-
-      // 상단 액션 바
-      e("div",{style:{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}},
-        e("button",{onClick:loadPreset,
-          style:{flex:"1 1 auto",background:"linear-gradient(135deg,#1E3A5F,#2D6A9F)",color:"#fff",border:"none",borderRadius:10,padding:"10px 8px",fontWeight:700,cursor:"pointer",fontSize:13}},
-          "📥 확정 시간표 불러오기"
-        ),
-        e("button",{onClick:()=>setShowAddForm(f=>!f),
-          style:{flex:"1 1 auto",background:showAddForm?C.td:C.white,color:showAddForm?"#fff":C.td,border:"1px solid #E2E8F0",borderRadius:10,padding:"10px 8px",fontWeight:600,cursor:"pointer",fontSize:13}},
-          showAddForm?"✕ 닫기":"➕ 항목 추가"
-        ),
-        sched.length>0&&e("button",{onClick:clearAll,
-          style:{padding:"10px 12px",background:"#FEE2E2",border:"none",borderRadius:10,cursor:"pointer",fontSize:13,color:"#991B1B",fontWeight:600}},
-          "🗑 전체 삭제"
-        )
-      ),
-
-      // 추가 폼 (토글)
-      showAddForm&&e("div",{style:{...card,border:"1px solid #E2E8F0"}},
-        e("div",{style:{fontSize:15,fontWeight:700,marginBottom:12,color:C.td}},"➕ 새 일정 추가"),
+    tab==="schedule" && e("div",null,
+      e("div",{style:card},
+        e("div",{style:{fontSize:16,fontWeight:700,marginBottom:12}},"➕ 일정 추가"),
         e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:8}},
-          e("input",{style:inp,placeholder:"날짜 (예: 7월 17일 (목))",value:schedForm.day,onChange:ev=>setSchedForm(f=>({...f,day:ev.target.value}))}),
-          e("input",{style:inp,placeholder:"시간 (예: 09:00)",value:schedForm.time,onChange:ev=>setSchedForm(f=>({...f,time:ev.target.value}))})
+          e("input",{style:inp,placeholder:"날짜 (예: 7월 18일)",value:schedForm.day,onChange:ev=>setSchedForm(f=>({...f,day:ev.target.value}))}),
+          e("input",{style:inp,placeholder:"시간 (예: 09:00–10:00)",value:schedForm.time,onChange:ev=>setSchedForm(f=>({...f,time:ev.target.value}))})
         ),
-        e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:8}},
-          e("input",{style:inp,placeholder:"프로그램명",value:schedForm.prog,onChange:ev=>setSchedForm(f=>({...f,prog:ev.target.value}))}),
-          e("input",{style:inp,placeholder:"소요시간 (예: 40분)",value:schedForm.dur,onChange:ev=>setSchedForm(f=>({...f,dur:ev.target.value}))})
-        ),
-        e("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}},
-          e("div",null,
-            e("div",{style:{fontSize:12,color:C.tm,marginBottom:6}},"구분 태그"),
-            e("select",{value:schedForm.tag,onChange:ev=>setSchedForm(f=>({...f,tag:ev.target.value})),
-              style:{...inp,padding:"9px 10px"}},
-              TAG_OPTIONS.map(t=>e("option",{key:t,value:t},t||"(없음)"))
-            )
-          ),
-          e("div",null,
-            e("div",{style:{fontSize:12,color:C.tm,marginBottom:6}},"아이콘"),
-            e("div",{style:{display:"flex",flexWrap:"wrap",gap:4}},
-              ICONS.slice(0,14).map(ic=>e("button",{key:ic,onClick:()=>setSchedForm(f=>({...f,icon:ic})),
-                style:{width:30,height:30,borderRadius:6,border:"2px solid "+(schedForm.icon===ic?C.sky:"#E2E8F0"),
-                       background:schedForm.icon===ic?C.skyL:"#fff",cursor:"pointer",fontSize:14}},ic))
-            )
+        e("input",{style:{...inp,marginBottom:8},placeholder:"프로그램명",value:schedForm.prog,onChange:ev=>setSchedForm(f=>({...f,prog:ev.target.value}))}),
+        e("div",{style:{marginBottom:12}},
+          e("div",{style:{fontSize:12,color:C.tm,marginBottom:6}},"아이콘 선택"),
+          e("div",{style:{display:"flex",flexWrap:"wrap",gap:6}},
+            ICONS.map(ic=>e("button",{key:ic,onClick:()=>setSchedForm(f=>({...f,icon:ic})),style:{width:34,height:34,borderRadius:8,border:"2px solid "+(schedForm.icon===ic?C.sky:"#E2E8F0"),background:schedForm.icon===ic?C.skyL:"#fff",cursor:"pointer",fontSize:16}},ic))
           )
         ),
         e("button",{onClick:addSched,style:{background:"linear-gradient(135deg,#1E3A5F,#2D6A9F)",color:"#fff",border:"none",borderRadius:8,padding:"10px 20px",fontWeight:600,cursor:"pointer",fontSize:14}},"일정 추가")
       ),
-
-      // 빈 상태
       sched.length===0
-        ?e("div",{style:{...card,textAlign:"center",padding:"3rem 1rem",color:C.tl}},
+        ? e("div",{style:{...card,textAlign:"center",padding:"3rem 1rem",color:C.tl}},
             e("div",{style:{fontSize:40,marginBottom:12}},"📅"),
             e("div",{style:{fontSize:15,fontWeight:600,marginBottom:6}},"아직 등록된 일정이 없어요"),
-            e("div",{style:{fontSize:13,marginBottom:20}},"위에서 확정 시간표를 불러오거나 항목을 직접 추가하세요"),
-            e("button",{onClick:loadPreset,
-              style:{background:"linear-gradient(135deg,#1E3A5F,#2D6A9F)",color:"#fff",border:"none",borderRadius:10,padding:"12px 24px",fontWeight:700,cursor:"pointer",fontSize:14}},
-              "📥 확정 시간표 불러오기"
-            )
+            e("div",{style:{fontSize:13}},"위 폼에서 일정을 추가해보세요")
           )
-        // 날짜별 그룹
-        :e("div",null,
-            e("div",{style:{fontSize:12,color:C.tl,marginBottom:10,textAlign:"right"}},
-              "✏️ 항목을 클릭하면 바로 수정할 수 있어요"
-            ),
-            days.map((day,di)=>{
-              const [dc,dcL,dcD]=DAY_COLORS[di%5];
-              const items=sched.filter(s=>s.day===day);
-              return e("div",{key:day,style:card},
-                e("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:14}},
-                  e("div",{style:{width:12,height:12,borderRadius:"50%",background:dc,flexShrink:0}}),
-                  e("div",{style:{fontSize:16,fontWeight:700}},day),
-                  e("span",{style:pill(dcL,dcD)},items.length+"개 프로그램")
-                ),
-                items.map((it,ii)=>
-                  e(SchedRow,{
-                    key:it.id,
-                    item:it,
-                    onSave:saveSched,
-                    onDelete:delSched,
-                    isLast:ii===items.length-1
-                  })
+        : [...new Set(sched.map(s=>s.day))].map((day,di)=>{
+            const [dc,dcL,dcD] = DAY_COLORS[di%5];
+            const items = sched.filter(s=>s.day===day);
+            return e("div",{key:day,style:card},
+              e("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:12}},
+                e("div",{style:{width:12,height:12,borderRadius:"50%",background:dc,flexShrink:0}}),
+                e("div",{style:{fontSize:16,fontWeight:700}},day),
+                e("span",{style:pill(dcL,dcD)},items.length+"개 프로그램")
+              ),
+              items.map((it,ii)=>
+                e("div",{key:it.id,style:{display:"flex",gap:10,padding:"9px 0",borderBottom:ii<items.length-1?"1px solid #F1F5F9":"none",alignItems:"center"}},
+                  e("div",{style:{minWidth:110,fontSize:12,color:C.tm}},it.time),
+                  e("div",{style:{fontSize:16}},it.icon),
+                  e("div",{style:{fontSize:14,flex:1}},it.prog),
+                  e("button",{onClick:()=>delSched(it.id),style:{background:"none",border:"none",cursor:"pointer",fontSize:13,color:C.tl,padding:"2px 4px",flexShrink:0}},"✕")
                 )
-              );
-            })
-          )
+              )
+            );
+          })
     ),
 
     // ── 체크리스트 ──
-    tab==="checklist"&&e("div",null,
+    tab==="checklist" && e("div",null,
       e("div",{style:{...card,marginBottom:12}},
         e("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center"}},
           e("div",{style:{fontSize:14,fontWeight:600}},"전체 진행률"),
@@ -660,7 +596,7 @@ function App(){
           cl.filter(c=>c.cat===cat).map(c=>
             e("div",{key:c.id,onClick:()=>check(c.id),style:{display:"flex",alignItems:"center",gap:10,padding:"9px 0",borderBottom:"1px solid #F1F5F9",opacity:c.done?.5:1,cursor:"pointer"}},
               e("div",{style:{width:20,height:20,borderRadius:6,border:"2px solid "+(c.done?C.mint:"#CBD5E1"),background:c.done?C.mint:"transparent",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}},
-                c.done&&e("span",{style:{color:"#fff",fontSize:13,fontWeight:700}},"✓")
+                c.done && e("span",{style:{color:"#fff",fontSize:13,fontWeight:700}},"✓")
               ),
               e("span",{style:{fontSize:14,textDecoration:c.done?"line-through":"none"}},c.item)
             )
@@ -670,7 +606,7 @@ function App(){
     ),
 
     // ── 자료실 ──
-    tab==="resources"&&e("div",null,
+    tab==="resources" && e("div",null,
       e("div",{style:card},
         e("div",{style:{fontSize:16,fontWeight:700,marginBottom:12}},"🎬 영상 자료"),
         e("div",{style:{position:"relative",paddingBottom:"56.25%",height:0,borderRadius:10,overflow:"hidden"}},
@@ -679,7 +615,9 @@ function App(){
       ),
       e("div",{style:card},
         e("div",{style:{fontSize:16,fontWeight:700,marginBottom:14}},"🎵 주제 찬양"),
-        SONGS.map((song,si)=>e(SongCard,{key:si,song,inp}))
+        SONGS.map((song,si)=>
+          e(SongCard,{key:si,song,inp})
+        )
       ),
       e("div",{style:card},
         e("div",{style:{fontSize:16,fontWeight:700,marginBottom:14}},"📂 자료 목록"),
@@ -705,13 +643,13 @@ function App(){
     ),
 
     // ── 게시판 ──
-    tab==="board"&&e("div",{style:card},
+    tab==="board" && e("div",{style:card},
       e("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}},
         e("div",{style:{fontSize:16,fontWeight:700}},"💬 교사 게시판"),
         e("span",{style:pill(C.skyL,C.skyD)},coms.length+"개")
       ),
       e("div",{style:{fontSize:12,color:C.tl,marginBottom:14}},"모든 교사가 실시간으로 공유하는 게시판입니다"),
-      coms.length===0&&e("div",{style:{textAlign:"center",padding:"2rem 0",color:C.tl,fontSize:14}},"첫 번째 댓글을 남겨보세요 😊"),
+      coms.length===0 && e("div",{style:{textAlign:"center",padding:"2rem 0",color:C.tl,fontSize:14}},"첫 번째 댓글을 남겨보세요 😊"),
       coms.map(c=>
         e("div",{key:c.id,style:{background:C.gray,borderRadius:10,padding:"10px 12px",marginBottom:8}},
           e("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:4}},
@@ -736,4 +674,5 @@ function App(){
 
 ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
 </script>
-</body></html>
+</body>
+</html>
