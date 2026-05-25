@@ -145,6 +145,7 @@ const RES = [
   {title:"일정표 인쇄용",desc:"전체 세션 시간표",icon:"📅",bg:C.mintL,tc:C.mintD,tag:"일정"},
 ];
 
+const ADMIN_PW = "pym5053";
 const ICONS = ["📋","🎵","📖","🍊","👥","🍱","🎨","🎶","🙏","✨","🏆","💬","📸","⚽","🎤","🌙","🔥","⚖️","🔄","🌱"];
 
 function pill(bg, tc) {
@@ -167,6 +168,10 @@ function SongCard({song}) {
 }
 
 function App() {
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [showPwModal, setShowPwModal] = useState(false);
+  const [pwInput, setPwInput] = useState("");
+  const [pwError, setPwError] = useState(false);
   const [tab, setTab] = useState("home");
   const [cl, setCl] = useState(DEFAULT_CL);
   const [coms, setComs] = useState([]);
@@ -268,6 +273,11 @@ function App() {
     if(db.current) await db.current.ref("schedule").set(updated.length?updated:null);
     else setSched(updated);
     showToast("삭제되었습니다");
+  }
+
+  function tryAdmin() {
+    if(pwInput===ADMIN_PW){setIsAdmin(true);setShowPwModal(false);setPwInput("");setPwError(false);showToast("관리자 모드 활성화 ✓");}
+    else{setPwError(true);}
   }
 
   async function updateOwner(id, owner) {
@@ -428,14 +438,40 @@ function App() {
 
     // ── 일정표 ──
     tab==="schedule"&&h("div",null,
-      h("div",{style:card},
+
+      // 비밀번호 모달
+      showPwModal&&h("div",{style:{position:"fixed",inset:0,background:"rgba(0,0,0,.5)",zIndex:100,display:"flex",alignItems:"center",justifyContent:"center"}},
+        h("div",{style:{background:"#fff",borderRadius:16,padding:"1.5rem",width:300,boxShadow:"0 8px 32px rgba(0,0,0,.2)"}},
+          h("div",{style:{fontSize:16,fontWeight:700,marginBottom:4}},"🔐 관리자 인증"),
+          h("div",{style:{fontSize:13,color:C.tm,marginBottom:12}},"담당자 수정 권한이 필요합니다"),
+          h("input",{type:"password",style:{...inp,marginBottom:6},placeholder:"비밀번호 입력",value:pwInput,onChange:ev=>{setPwInput(ev.target.value);setPwError(false);},onKeyDown:ev=>ev.key==="Enter"&&tryAdmin()}),
+          pwError&&h("div",{style:{fontSize:12,color:C.coralD,marginBottom:8}},"❌ 비밀번호가 올바르지 않습니다"),
+          h("div",{style:{display:"flex",gap:8}},
+            h("button",{onClick:tryAdmin,style:{flex:1,background:"linear-gradient(135deg,#1E3A5F,#2D6A9F)",color:"#fff",border:"none",borderRadius:8,padding:"10px",fontWeight:600,cursor:"pointer"}},"확인"),
+            h("button",{onClick:()=>{setShowPwModal(false);setPwInput("");setPwError(false);},style:{flex:1,background:C.gray,color:C.tm,border:"none",borderRadius:8,padding:"10px",fontWeight:600,cursor:"pointer"}},"취소")
+          )
+        )
+      ),
+
+      // 관리자 상태 표시
+      h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}},
+        isAdmin
+          ? h("div",{style:{display:"flex",alignItems:"center",gap:8}},
+              h("span",{style:{...pill(C.mintL,C.mintD)}},"🔓 관리자 모드"),
+              h("button",{onClick:()=>setIsAdmin(false),style:{background:"none",border:"none",cursor:"pointer",fontSize:12,color:C.tl}},"나가기")
+            )
+          : h("button",{onClick:()=>setShowPwModal(true),style:{background:C.gray,border:"1px solid #E2E8F0",borderRadius:8,padding:"6px 14px",fontSize:12,fontWeight:600,cursor:"pointer",color:C.tm}},"🔐 관리자 로그인")
+      ),
+
+      // 일정 추가 폼 (관리자만)
+      isAdmin&&h("div",{style:card},
         h("div",{style:{fontSize:16,fontWeight:700,marginBottom:12}},"➕ 일정 추가"),
         h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:8}},
           h("input",{style:inp,placeholder:"날짜 (예: 7월 17일)",value:schedForm.day,onChange:ev=>setSchedForm(f=>({...f,day:ev.target.value}))}),
           h("input",{style:inp,placeholder:"시간 (예: 09:00)",value:schedForm.time,onChange:ev=>setSchedForm(f=>({...f,time:ev.target.value}))})
         ),
         h("input",{style:{...inp,marginBottom:8},placeholder:"프로그램명",value:schedForm.prog,onChange:ev=>setSchedForm(f=>({...f,prog:ev.target.value}))}),
-        h("input",{style:{...inp,marginBottom:10},placeholder:"담당자",value:schedForm.owner,onChange:ev=>setSchedForm(f=>({...f,owner:ev.target.value}))}),
+        h("input",{style:{...inp,marginBottom:10},placeholder:"담당자 (여러 명은 쉼표로 구분)",value:schedForm.owner,onChange:ev=>setSchedForm(f=>({...f,owner:ev.target.value}))}),
         h("div",{style:{marginBottom:12}},
           h("div",{style:{fontSize:12,color:C.tm,marginBottom:6}},"아이콘 선택"),
           h("div",{style:{display:"flex",flexWrap:"wrap",gap:6}},
@@ -444,6 +480,8 @@ function App() {
         ),
         h("button",{onClick:addSched,style:{background:"linear-gradient(135deg,#1E3A5F,#2D6A9F)",color:"#fff",border:"none",borderRadius:8,padding:"10px 20px",fontWeight:600,cursor:"pointer",fontSize:14}},"일정 추가")
       ),
+
+      // 일정 목록
       (()=>{
         const days=[...new Set(sched.map(s=>s.day))];
         return days.map((day,di)=>{
@@ -460,13 +498,18 @@ function App() {
                 h("div",{style:{minWidth:46,fontSize:12,color:C.tm,flexShrink:0}},it.time),
                 h("div",{style:{fontSize:15,flexShrink:0}},it.icon),
                 h("div",{style:{fontSize:14,flex:1}},it.prog),
-                h("input",{
-                  placeholder:"담당자",
-                  defaultValue:it.owner||"",
-                  onBlur:ev=>updateOwner(it.id,ev.target.value),
-                  style:{width:88,padding:"4px 8px",borderRadius:8,border:"1px solid "+dcL,fontSize:12,outline:"none",background:dcL,color:dcD,fontWeight:600,textAlign:"center",flexShrink:0}
-                }),
-                h("button",{onClick:()=>delSched(it.id),style:{background:"none",border:"none",cursor:"pointer",fontSize:13,color:C.tl,padding:"2px 4px",flexShrink:0}},"✕")
+                // 담당자: 관리자면 입력칸, 일반은 텍스트
+                isAdmin
+                  ? h("input",{
+                      placeholder:"담당자 (쉼표로 구분)",
+                      defaultValue:it.owner||"",
+                      onBlur:ev=>updateOwner(it.id,ev.target.value),
+                      style:{width:130,padding:"4px 8px",borderRadius:8,border:"1px solid "+dcL,fontSize:12,outline:"none",background:dcL,color:dcD,fontWeight:600,flexShrink:0}
+                    })
+                  : it.owner
+                    ? h("span",{style:{fontSize:12,color:dcD,background:dcL,borderRadius:8,padding:"3px 8px",flexShrink:0,maxWidth:130,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}},it.owner)
+                    : h("span",{style:{fontSize:12,color:C.tl,flexShrink:0}},"—"),
+                isAdmin&&h("button",{onClick:()=>delSched(it.id),style:{background:"none",border:"none",cursor:"pointer",fontSize:13,color:C.tl,padding:"2px 4px",flexShrink:0}},"✕")
               )
             )
           );
