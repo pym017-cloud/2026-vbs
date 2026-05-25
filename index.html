@@ -105,18 +105,18 @@ const PRESET_SCHED = [
 ];
 
 const SESSIONS = [
-  {act:"1막",title:"정체성 발견",color:C.sky,colorL:C.skyL,colorD:C.skyD,items:[
-    {no:"세션 1",title:"나는 누구인가",verse:"고린도후서 5:17",keyword:"정체성 선언",icon:"👤",desc:"세상이 정의하는 나 vs 하나님이 정의하시는 나. 정체성의 출처를 바꿉니다."},
-    {no:"세션 2",title:"하나님의 눈으로 본 나",verse:"시편 139:13-14",keyword:"자기 수용",icon:"🔍",desc:"하나님이 나를 지으신 방식으로 자신을 바라보는 시간입니다."},
-  ]},
-  {act:"2막",title:"변화의 과정",color:C.pur,colorL:C.purL,colorD:C.purD,items:[
-    {no:"세션 3",title:"세상 vs 하나님의 기준",verse:"로마서 12:2",keyword:"마음 갱신",icon:"⚖️",desc:"SNS와 또래 문화가 만드는 기준을 직면하고, 하나님의 기준으로 전환합니다."},
-    {no:"세션 4",title:"변화는 어떻게 일어나는가",verse:"빌립보서 4:8",keyword:"사고의 전환",icon:"🔄",desc:"변화는 결심이 아니라 하나님과의 관계 안에서 일어납니다."},
-  ]},
-  {act:"3막",title:"열매 맺는 삶",color:C.mint,colorL:C.mintL,colorD:C.mintD,items:[
-    {no:"세션 5",title:"성령의 열매로 산다",verse:"갈라디아서 5:22-23",keyword:"실천 선언",icon:"🌱",desc:"9가지 열매를 학교·가정·관계 안에서 지금 선택할 수 있는 삶의 방식으로 연결합니다."},
-    {no:"세션 6",title:"NEW ME 선언식",verse:"고린도후서 5:17",keyword:"파송 & 결단",icon:"✨",desc:"캠프의 여정을 마무리하며 새로운 나를 선언하고 일상으로 파송합니다."},
-  ]},
+  {act:"1막",title:"정체성 발견",color:C.sky,colorL:C.skyL,colorD:C.skyD,
+   session:{no:"세션 1",title:"나는 누구인가",verse:"고린도후서 5:17",keyword:"정체성 선언",icon:"👤",
+    desc:"세상이 정의하는 나 vs 하나님이 정의하시는 나. 정체성의 출처를 바꿉니다.\n\n\"새로운 피조물(καινὴ κτίσις)\"은 단순한 도덕적 개선이 아닙니다. 그리스도 안에서의 변화가 새 창조에 맞먹는 근본적 사건임을 선언합니다. 세상이 규정한 나의 과거, 실패, 한계는 \"이전 것\"으로 지나갔습니다."}
+  },
+  {act:"2막",title:"변화의 과정",color:C.pur,colorL:C.purL,colorD:C.purD,
+   session:{no:"세션 3",title:"세상 vs 하나님의 기준",verse:"로마서 12:2",keyword:"마음 갱신",icon:"⚖️",
+    desc:"SNS와 또래 문화가 형성하는 \"이 세대의 기준\"을 구체적으로 직면하고, 하나님의 기준으로 사고를 전환합니다.\n\n\"마음을 새롭게 함(ἀνακαίνωσις)\"은 지속적 과정(현재 시제)으로, 하나님의 말씀과 성령으로 사고방식 자체가 갱신됨을 뜻합니다."}
+  },
+  {act:"3막",title:"열매 맺는 삶",color:C.mint,colorL:C.mintL,colorD:C.mintD,
+   session:{no:"세션 5",title:"성령의 열매로 산다",verse:"갈라디아서 5:22-23",keyword:"실천 선언",icon:"🌱",
+    desc:"9가지 열매를 추상적 덕목이 아닌, 학교·가정·관계 안에서 지금 당장 선택할 수 있는 구체적 삶의 방식으로 연결합니다.\n\n성령의 열매는 인간의 노력으로 만들어지는 것이 아니라, 성령의 내주로 자연스럽게 흘러나오는 삶의 성품입니다."}
+  },
 ];
 
 const WORDS = [
@@ -398,28 +398,27 @@ function App() {
 
     // ── 세션 ──
     tab==="sessions"&&h("div",null,
-      SESSIONS.map((s,si)=>
-        h("div",{key:si,style:card},
+      SESSIONS.map((s,si)=>{
+        const it=s.session;
+        return h("div",{key:si,style:card},
           h("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:14}},
             h("div",{style:{width:36,height:36,borderRadius:10,background:s.colorL,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:800,color:s.color}},s.act),
             h("div",{style:{fontSize:16,fontWeight:700}},s.title)
           ),
-          s.items.map((it,ii)=>
-            h("div",{key:ii,style:{background:s.colorL,borderRadius:12,padding:"1rem",marginBottom:ii<s.items.length-1?10:0}},
-              h("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:6}},
-                h("span",{style:{fontSize:20}},it.icon),
-                h("div",null,
-                  h("div",{style:{fontSize:13,color:s.colorD,fontWeight:700}},it.no),
-                  h("div",{style:{fontSize:15,fontWeight:700,color:C.td}},it.title)
-                ),
-                h("span",{style:{...pill(s.color+"33",s.colorD),marginLeft:"auto",fontSize:10}},it.keyword)
+          h("div",{style:{background:s.colorL,borderRadius:12,padding:"1rem"}},
+            h("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:10}},
+              h("span",{style:{fontSize:24}},it.icon),
+              h("div",null,
+                h("div",{style:{fontSize:12,color:s.colorD,fontWeight:700}},it.no),
+                h("div",{style:{fontSize:16,fontWeight:700,color:C.td}},it.title)
               ),
-              h("div",{style:{fontSize:12,color:C.tm,lineHeight:1.6,marginBottom:6}},it.desc),
-              h("div",{style:{fontSize:12,color:s.colorD,fontWeight:600}},"📖 "+it.verse)
-            )
+              h("span",{style:{...pill(s.color+"33",s.colorD),marginLeft:"auto",fontSize:10}},it.keyword)
+            ),
+            h("div",{style:{fontSize:13,color:s.colorD,fontWeight:600,marginBottom:8}},"📖 "+it.verse),
+            h("div",{style:{fontSize:13,color:C.tm,lineHeight:1.9,whiteSpace:"pre-line"}},it.desc)
           )
-        )
-      ),
+        );
+      }),
       h("div",{style:{...card,background:C.purL}},
         h("div",{style:{fontSize:14,fontWeight:700,color:C.purD,marginBottom:10}},"✦ 캠프 설계 원칙"),
         [{n:"①",t:"지식 → 경험 → 결단",d:"말씀 강의 · 소그룹 나눔 · 개인 결단 3단계"},
